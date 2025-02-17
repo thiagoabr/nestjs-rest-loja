@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -13,10 +14,12 @@ import { AtualizaProdutoDTO } from './dto/atualizaProduto.dto';
 import { CriaProdutoDTO } from './dto/CriaProduto.dto';
 import { ProdutoEntity } from './produto.entity';
 import { ProdutoRepository } from './produto.repository';
+import { ProdutoService } from './produto.service';
+import { retry } from 'rxjs';
 
 @Controller('produtos')
 export class ProdutoController {
-  constructor(private readonly produtoRepository: ProdutoRepository) {}
+  constructor(private produtoService: ProdutoService) {}
 
   @Post()
   async criaNovo(@Body() dadosProduto: CriaProdutoDTO) {
@@ -31,39 +34,39 @@ export class ProdutoController {
     produto.categoria = dadosProduto.categoria;
     produto.caracteristicas = dadosProduto.caracteristicas;
     produto.imagens = dadosProduto.imagens;
-
-    const produtoCadastrado = this.produtoRepository.salva(produto);
-    return produtoCadastrado;
+  
+    try {
+      return this.produtoService.criaNovo(produto);
+    } catch (error) {
+      throw new BadRequestException("Erro ao criar produto");
+    }
   }
 
   @Get()
   async listaTodos() {
-    return this.produtoRepository.listaTodos();
+    try {
+      return this.produtoService.listaTodos();
+    } catch (error) {
+      throw new BadRequestException("Erro ao listar produtos");
+    }
   }
 
   @Put('/:id')
-  async atualiza(
-    @Param('id') id: string,
-    @Body() dadosProduto: AtualizaProdutoDTO,
-  ) {
-    const produtoAlterado = await this.produtoRepository.atualiza(
-      id,
-      dadosProduto,
-    );
-
-    return {
-      mensagem: 'produto atualizado com sucesso',
-      produto: produtoAlterado,
-    };
+  async atualiza(@Param('id') id: string, @Body() dadosProduto: AtualizaProdutoDTO) {
+    try {
+      return await this.produtoService.atualiza(id, dadosProduto);
+    } catch (error) {
+      throw new BadRequestException("Erro ao atualizar produto");
+    }
   }
 
   @Delete('/:id')
   async remove(@Param('id') id: string) {
-    const produtoRemovido = await this.produtoRepository.remove(id);
-
-    return {
-      mensagem: 'produto removido com sucesso',
-      produto: produtoRemovido,
-    };
+    try {
+      return await this.produtoService.remove(id);
+    } catch (error) {
+      throw new BadRequestException("Erro ao excluir produto");
+    }
   }
+  
 }
