@@ -14,7 +14,6 @@ import { AtualizaProdutoDTO } from './dto/atualizaProduto.dto';
 import { CriaProdutoDTO } from './dto/CriaProduto.dto';
 import { ProdutoEntity } from './produto.entity';
 import { ProdutoService } from './produto.service';
-import { retry } from 'rxjs';
 
 @Controller('produtos')
 export class ProdutoController {

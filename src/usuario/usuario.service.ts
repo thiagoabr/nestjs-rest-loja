@@ -29,13 +29,13 @@ export class UsuarioService {
     }
   }
 
-  async atualizaUsuario(id: string, novosDados: AtualizaUsuarioDTO) {
+  async atualizaUsuario(id: string, dadosDeAtualizacao: Partial<UsuarioEntity>) {
       const existeUsuario = await this.usuarioRepository.buscaPorId(id);
       if (!existeUsuario) {
           throw new NotFoundException("Usuário não encontrado")
       }
       try {
-        const usuarioAtualizado = await this.usuarioRepository.atualiza(id, novosDados);
+        const usuarioAtualizado = await this.usuarioRepository.atualiza(id, dadosDeAtualizacao);
         return {
             usuario: usuarioAtualizado,
             menssagem: 'Usuário atualizado com sucesso',

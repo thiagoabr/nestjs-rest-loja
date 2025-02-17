@@ -43,7 +43,7 @@ export class UsuarioController {
 
   @Put('/:id')
   async atualizaUsuario(@Param('id') id: string, @Body() novosDados: AtualizaUsuarioDTO) {
-      try {
+    try {
         return await this.usuarioService.atualizaUsuario(id, novosDados);
     } catch (error) {
       throw new BadRequestException("Erro ao atualiza usuário");      
