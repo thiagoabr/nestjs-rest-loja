@@ -8,11 +8,11 @@ import { AtualizaProdutoDTO } from "./dto/atualizaProduto.dto";
 export class ProdutoService {
     constructor(private produtoRepository: ProdutoRepository) {}
 
-    async criaNovo(produto: ProdutoEntity) {
+    async criaNovo(produtos: ProdutoEntity) {
         try {
-            this.produtoRepository.salva(produto);
+            this.produtoRepository.salva(produtos);
             return {
-                usuario: new ListaProdutoDTO(),
+                produto: new ListaProdutoDTO(produtos.id, produtos.usuarioId, produtos.nome),
                 messagem: 'Produto criado com sucesso',
             };
         } catch (error) {
@@ -23,6 +23,20 @@ export class ProdutoService {
     async listaTodos() {
         return this.produtoRepository.listaTodos();
     }
+
+    async getProdutosPaginados(page: number = 1, limit: number = 5) {
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const produtos = this.produtoRepository.listaTodos();
+        const produtosPaginados = produtos.slice(startIndex, endIndex);
+    
+        return {
+          total: produtos.length,
+          page,
+          limit,
+          data: produtosPaginados,
+        };
+      }
 
     async atualiza(id: string, dadosProduto: AtualizaProdutoDTO) {
         try {

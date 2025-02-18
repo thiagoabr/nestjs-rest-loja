@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 
@@ -41,13 +42,19 @@ export class ProdutoController {
   }
 
   @Get()
-  async listaTodos() {
+  async listaTodos(@Query('page') page: string, @Query('limit') limit: string) {
     try {
+      if (page && limit) {
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
+        return this.produtoService.getProdutosPaginados(pageNumber, limitNumber);
+      }
       return this.produtoService.listaTodos();
     } catch (error) {
       throw new BadRequestException("Erro ao listar produtos");
     }
   }
+  
 
   @Put('/:id')
   async atualiza(@Param('id') id: string, @Body() dadosProduto: AtualizaProdutoDTO) {
