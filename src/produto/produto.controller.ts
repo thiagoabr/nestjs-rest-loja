@@ -42,12 +42,12 @@ export class ProdutoController {
   }
 
   @Get()
-  async listaTodos(@Query('page') page: string, @Query('limit') limit: string) {
+  async listaTodos(@Query('pagina') pagina: string, @Query('limite') limite: string) {
     try {
-      if (page && limit) {
-        const pageNumber = parseInt(page, 10);
-        const limitNumber = parseInt(limit, 10);
-        return this.produtoService.getProdutosPaginados(pageNumber, limitNumber);
+      if (pagina && limite) {
+        const numeroPagina = parseInt(pagina, 10);
+        const numeroLimite = parseInt(limite, 10);
+        return this.produtoService.getProdutosPaginados(numeroPagina, numeroLimite);
       }
       return this.produtoService.listaTodos();
     } catch (error) {

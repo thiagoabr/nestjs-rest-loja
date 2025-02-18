@@ -24,17 +24,17 @@ export class ProdutoService {
         return this.produtoRepository.listaTodos();
     }
 
-    async getProdutosPaginados(page: number = 1, limit: number = 5) {
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + limit;
+    async getProdutosPaginados(pagina: number = 1, limite: number = 5) {
+        const indexInicial = (pagina - 1) * limite;
+        const indexFinal = indexInicial + limite;
         const produtos = this.produtoRepository.listaTodos();
-        const produtosPaginados = produtos.slice(startIndex, endIndex);
+        const produtosPaginados = produtos.slice(indexInicial, indexFinal);
     
         return {
           total: produtos.length,
-          page,
-          limit,
-          data: produtosPaginados,
+          pagina,
+          limite,
+          produtos: produtosPaginados,
         };
       }
 
