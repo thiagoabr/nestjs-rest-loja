@@ -3,16 +3,29 @@ import { ProdutoRepository } from "./produto.repository";
 import { ProdutoEntity } from "./produto.entity";
 import { ListaProdutoDTO } from "./dto/ListaProduto.dto";
 import { AtualizaProdutoDTO } from "./dto/atualizaProduto.dto";
+import { randomUUID } from "crypto";
+import { CriaProdutoDTO } from "./dto/CriaProduto.dto";
 
 @Injectable()
 export class ProdutoService {
     constructor(private produtoRepository: ProdutoRepository) {}
 
-    async criaNovo(produtos: ProdutoEntity) {
+    async criaNovo(dadosProduto: CriaProdutoDTO) {
+        const produto = new ProdutoEntity();
         try {
-            this.produtoRepository.salva(produtos);
+            produto.id = randomUUID();
+            produto.nome = dadosProduto.nome;
+            produto.usuarioId = dadosProduto.usuarioId;
+            produto.valor = dadosProduto.valor;
+            produto.quantidade = dadosProduto.quantidade;
+            produto.descricao = dadosProduto.descricao;
+            produto.categoria = dadosProduto.categoria;
+            produto.caracteristicas = dadosProduto.caracteristicas;
+            produto.imagens = dadosProduto.imagens;
+
+            this.produtoRepository.salva(produto);
             return {
-                produto: new ListaProdutoDTO(produtos.id, produtos.usuarioId, produtos.nome),
+                produto: new ListaProdutoDTO(produto.id, produto.usuarioId, produto.nome),
                 messagem: 'Produto criado com sucesso',
             };
         } catch (error) {

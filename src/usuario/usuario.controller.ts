@@ -20,13 +20,8 @@ export class UsuarioController {
 
   @Post()
   async criaUsuario(@Body() dadosDoUsuario: CriaUsuarioDTO) {
-      const usuarioEntity = new UsuarioEntity();
-      usuarioEntity.email = dadosDoUsuario.email;
-      usuarioEntity.senha = dadosDoUsuario.senha;
-      usuarioEntity.nome = dadosDoUsuario.nome;
-      usuarioEntity.id = uuid();
       try {
-        return this.usuarioService.criaUsuario(usuarioEntity);
+        return this.usuarioService.criaUsuario(dadosDoUsuario);
       } catch (error) {
         throw new BadRequestException("Erro ao criar usuário");
       }

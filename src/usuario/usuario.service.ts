@@ -3,18 +3,26 @@ import { ListaUsuarioDTO } from './dto/ListaUsuario.dto';
 import { UsuarioEntity } from './usuario.entity';
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { AtualizaUsuarioDTO } from './dto/AtualizaUsuario.dto';
+import { CriaUsuarioDTO } from './dto/CriaUsuario.dto';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UsuarioService {
   constructor(private usuarioRepository: UsuarioRepository) {}
 
-  async criaUsuario(usuarios: UsuarioEntity) {
+  async criaUsuario(dadosDoUsuario: CriaUsuarioDTO) {
+    const usuarioEntity = new UsuarioEntity();
     try {
-         this.usuarioRepository.salvar(usuarios);
-         return {
-            usuario: new ListaUsuarioDTO(usuarios.id, usuarios.nome),
-            messagem: 'Usuário criado com sucesso',
-          };
+      usuarioEntity.email = dadosDoUsuario.email;
+      usuarioEntity.senha = dadosDoUsuario.senha;
+      usuarioEntity.nome = dadosDoUsuario.nome;
+      usuarioEntity.id = uuid();
+
+      this.usuarioRepository.salvar(usuarioEntity);
+      return {
+        usuario: new ListaUsuarioDTO(usuarioEntity.id, usuarioEntity.nome),
+        messagem: 'Usuário criado com sucesso',
+      };
     } catch (error) {
         throw new BadRequestException("Erro ao criar usuário!");
     }
